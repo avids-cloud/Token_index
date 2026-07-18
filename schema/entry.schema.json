@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tokencostindex.org/schema/entry.schema.json",
+  "title": "Token Cost Index Entry",
+  "description": "One measured record of token consumption for a defined business task. Mirrors supabase/migrations/001_initial.sql, which is the source of truth. Used for client-side validation (via zod, generated from this file) and for validating dataset exports.",
+  "type": "object",
+  "required": [
+    "task_name",
+    "task_pattern",
+    "industry_tags",
+    "task_unit",
+    "provider",
+    "model",
+    "prompt_strategy",
+    "calls_per_unit",
+    "includes_retries",
+    "input_tokens_median",
+    "output_tokens_median",
+    "sample_size",
+    "measurement_date",
+    "methodology"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "task_name": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 120,
+      "description": "Plain-language name for the task. Example: 'Supplier invoice field extraction'."
+    },
+    "task_pattern": {
+      "type": "string",
+      "enum": [
+        "extraction",
+        "classification",
+        "summarisation",
+        "generation",
+        "reconciliation",
+        "translation",
+        "analysis",
+        "agentic_workflow",
+        "conversation",
+        "other"
+      ]
+    },
+    "industry_tags": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": [
+          "accounting",
+          "supply_chain",
+          "legal",
+          "finance",
+          "insurance",
+          "healthcare",
+          "engineering",
+          "hr",
+          "marketing",
+          "customer_service",
+          "retail",
+          "manufacturing",
+          "government",
+          "education",
+          "general"
+        ]
+      }
+    },
+    "task_unit": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 60,
+      "description": "The unit costs are measured against. Example: 'per invoice', 'per contract clause'."
+    },
+    "provider": {
+      "type": "string",
+      "description": "Lowercase provider slug. Example: 'anthropic', 'openai', 'google'."
+    },
+    "model": {
+      "type": "string",
+      "description": "Model identifier as billed. Example: 'claude-sonnet-4-6'."
+    },
+    "prompt_strategy": {
+      "type": "string",
+      "enum": ["zero_shot", "few_shot", "rag", "agentic", "fine_tuned", "other"]
+    },
+    "calls_per_unit": {
+      "type": "number",
+      "minimum": 1,
+      "description": "Average API calls per task unit. Agentic workflows are usually well above 1."
+    },
+    "includes_retries": {
+      "type": "boolean",
+      "description": "True if the token figures include failed calls and retries."
+    },
+    "input_tokens_median": {
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "description": "Median input tokens per task unit, summed across all calls."
+    },
+    "output_tokens_median": {
+      "type": "integer",
+      "exclusiveMinimum": 0
+    },
+    "input_tokens_p90": {
+      "type": "integer",
+      "description": "Optional. 90th percentile input tokens per task unit. Must be >= median."
+    },
+    "output_tokens_p90": {
+      "type": "integer"
+    },
+    "sample_size": {
+      "type": "integer",
+      "minimum": 10,
+      "description": "Number of task units measured. Minimum 10."
+    },
+    "measurement_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When the measurement was taken. Model behaviour changes over time."
+    },
+    "methodology": {
+      "type": "string",
+      "minLength": 80,
+      "description": "How tokens were measured: billing dashboard, API response usage fields, logging middleware. Include input document characteristics. This field is the trust mechanism."
+    },
+    "source_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Optional link to a write-up, benchmark, or public evidence."
+    },
+    "submitter_display": {
+      "type": "string",
+      "maxLength": 60,
+      "description": "Optional public handle for attribution."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}
