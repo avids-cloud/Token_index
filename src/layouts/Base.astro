@@ -1,0 +1,95 @@
+---
+// Self-hosted IBM Plex via Fontsource. Sans 400/600 (semibold headings),
+// Mono 400 for figures. See docs/DESIGN.md Type section.
+import '@fontsource/ibm-plex-sans/400.css';
+import '@fontsource/ibm-plex-sans/600.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Token Cost Index',
+  description = 'An open dataset of measured token costs for business AI tasks.',
+} = Astro.props;
+
+const nav = [
+  { href: '/', label: 'Index' },
+  { href: '/submit', label: 'Submit' },
+  { href: '/about', label: 'About' },
+  { href: '/api', label: 'API' },
+];
+
+const path = Astro.url.pathname;
+const isCurrent = (href: string) =>
+  href === '/' ? path === '/' : path.startsWith(href);
+---
+
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>{title}</title>
+  </head>
+  <body class="bg-paper text-ink font-sans">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-10 focus:bg-paper focus:px-3 focus:py-2"
+    >
+      Skip to content
+    </a>
+
+    <header class="border-b border-rule">
+      <div class="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-baseline sm:justify-between">
+        <a href="/" class="no-underline">
+          <span class="text-figure text-xl font-semibold tracking-tight">
+            Token Cost Index
+          </span>
+        </a>
+        <nav aria-label="Primary">
+          <ul class="flex gap-5 text-sm">
+            {
+              nav.map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    aria-current={isCurrent(item.href) ? 'page' : undefined}
+                    class:list={[
+                      'no-underline hover:underline',
+                      isCurrent(item.href)
+                        ? 'text-ink font-semibold underline'
+                        : 'text-accent',
+                    ]}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main" class="mx-auto max-w-6xl px-4 py-8">
+      <slot />
+    </main>
+
+    <footer class="mt-16 border-t border-rule">
+      <div class="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-6 text-sm sm:flex-row sm:justify-between">
+        <p class="m-0">
+          Code under MIT. Dataset under CC BY 4.0.
+        </p>
+        <p class="m-0">
+          <a href="https://github.com/avids-cloud/token_index">GitHub</a>
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

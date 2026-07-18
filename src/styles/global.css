@@ -1,0 +1,75 @@
+@import 'tailwindcss';
+
+/*
+  Design tokens. Source: docs/DESIGN.md.
+  The subject is cost; the look is a digital rate card. Ledger-paper green
+  background, deep green figures, accountant's red reserved for warnings only.
+  Values may be adjusted in execution, but keep the logic.
+*/
+@theme {
+  --color-paper: #edf2ec; /* ledger-paper green, page background */
+  --color-rule: #c9d6c8; /* ruled lines between rows */
+  --color-ink: #17251b; /* near-black green ink, primary text */
+  --color-figure: #0b3b2e; /* deep green for token and dollar figures */
+  --color-delta: #a4302a; /* accountant's red, warnings and cost increases only */
+  --color-accent: #1d4ed8; /* ink blue for links and interactive states */
+
+  --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+}
+
+/* DESIGN.md names the tokens without a colour- prefix. Expose those too, so
+   raw CSS can reference them by their documented names. */
+:root {
+  --paper: var(--color-paper);
+  --rule: var(--color-rule);
+  --ink: var(--color-ink);
+  --figure: var(--color-figure);
+  --delta: var(--color-delta);
+  --accent: var(--color-accent);
+}
+
+html {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--color-accent);
+  text-underline-offset: 2px;
+}
+
+/*
+  Figures. IBM Plex Mono with tabular-nums so columns of numbers align.
+  Non-negotiable per DESIGN.md: misaligned figures destroy trust in a cost tool.
+*/
+.figure {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Visible keyboard focus on every interactive element (DESIGN.md quality floor). */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* The site is static apart from the repricing strip count-up. Respect the
+   reduced-motion preference by removing motion entirely. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
