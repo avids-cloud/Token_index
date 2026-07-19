@@ -25,23 +25,26 @@ Status key: `[ ]` todo · `[~]` in progress · `[x]` done · `[!]` blocked on `[
 
 ## Now
 
-- [ ] **Phase 0 kickoff is Avi's.** Nothing is in progress for Claude until the
-  Phase 0 `[AVI]` prerequisites below are done, which unblock Phase 2. Phase 1
-  (scaffold) is complete — see `Done`.
+- [ ] **Phase 3 (auth + submission form) is next**, but it needs GitHub OAuth +
+  magic link enabled in Supabase Auth (item 1 below) before the form can sign
+  anyone in. Phase 1 (scaffold) and Phase 2 (database) are complete — see `Done`.
+  One Phase 2 loose end: run the RLS integration test with real credentials to
+  turn its ✍️-written cases green (item 2 below).
 
 ## Next
 
 Ordered queue. Top item moves to `Now`.
 
-1. [~] **[AVI] Create Supabase project**, note URL + anon key. — `BUILD_PLAN §Phase 0`
-   Project created (`ggpucjklyigxmnhdtyuj`). Supabase MCP added at project scope
-   (`.mcp.json`); URL is in `.env.example`. **Still needed:** the anon key (paste
-   it to Claude, or set it locally) so Phase 2 can run.
-2. [!] **[AVI] Enable GitHub OAuth + email magic link** in Supabase Auth. — `BUILD_PLAN §Phase 0`
-3. [!] **[AVI] Create GitHub repo + connect Cloudflare Pages.** — `BUILD_PLAN §Phase 0`
-4. [!] **[AVI] Decide final project name + domain** (working name is a placeholder). — `PRD §top`, `BUILD_PLAN §Phase 0`
-5. [!] **[AVI] Verify every price in `data/model-pricing.json`** against provider pages, refresh `as_of`. — `BUILD_PLAN §Phase 0`, `CLAUDE.md rule 5`
-6. [ ] **Phase 2: apply migration `001_initial.sql`**, gen TS types, write supabase client, zod schema + sync test, RLS tests. — `BUILD_PLAN §Phase 2` *(unblocks once Phase 0 items 1–2 done)*
+1. [!] **[AVI] Enable GitHub OAuth + email magic link** in Supabase Auth. — `BUILD_PLAN §Phase 0` *(blocks Phase 3)*
+2. [!] **[AVI] Run the RLS test with credentials.** Set `PUBLIC_SUPABASE_ANON_KEY`
+   (+ a confirmed `TEST_USER_EMAIL`/`TEST_USER_PASSWORD`) and `npm run test` so
+   `test/rls.test.ts` runs live, closing the Phase 2 acceptance criterion. — `BUILD_PLAN §Phase 2 accept`
+3. [ ] **Regenerate `src/lib/database.types.ts`** with `supabase gen types` once the
+   CLI/MCP is authenticated locally, replacing the hand-authored mirror. — `BUILD_PLAN §Phase 2`
+4. [!] **[AVI] Create GitHub repo + connect Cloudflare Pages.** — `BUILD_PLAN §Phase 0`
+5. [!] **[AVI] Decide final project name + domain** (working name is a placeholder). — `PRD §top`, `BUILD_PLAN §Phase 0`
+6. [!] **[AVI] Verify every price in `data/model-pricing.json`** against provider pages, refresh `as_of`. — `BUILD_PLAN §Phase 0`, `CLAUDE.md rule 5`
+7. [ ] **Phase 3: `/submit` form**, once OAuth is enabled. — `BUILD_PLAN §Phase 3`
 
 ---
 
@@ -59,14 +62,14 @@ the site (Studio + export Action secret only).
 - [x] IBM Plex Sans + Mono self-hosted (Fontsource), `.figure` tabular-nums — `DESIGN §Type`
 - [x] Base layout: header wordmark + nav, footer licence + GitHub — `BUILD_PLAN §Phase 1`
 
-### Phase 2 — Database — `BUILD_PLAN §Phase 2`
-- [ ] Apply `supabase/migrations/001_initial.sql`
-- [ ] `supabase gen types typescript` → `src/lib/database.types.ts`
-- [ ] `src/lib/supabase.ts` client factory (anon key)
-- [ ] `src/lib/entry-schema.ts` zod, kept in sync with `schema/entry.schema.json`
-- [ ] Sync test: zod fields + enums match the JSON Schema — `CLAUDE.md rule 2`
-- [ ] Structure check on `data/seed-entries.example.json` only. **Never insert example data** — `CLAUDE.md rule 3`
-- [ ] RLS tests: anon reads `public_entries`, cannot read pending, cannot insert; authed inserts own pending, cannot insert `approved` — `BUILD_PLAN §Phase 2 accept`
+### Phase 2 — Database — `BUILD_PLAN §Phase 2` — **DONE (one live-run loose end)**
+- [x] Apply `supabase/migrations/001_initial.sql` — applied live to `ggpucjklyigxmnhdtyuj`
+- [~] `database.types.ts` — hand-authored mirror in place; regenerate via CLI (Next #3)
+- [x] `src/lib/supabase.ts` client factory (anon key)
+- [x] `src/lib/entry-schema.ts` zod, kept in sync with `schema/entry.schema.json`
+- [x] Sync test: zod fields + enums match the JSON Schema — `CLAUDE.md rule 2`
+- [x] Structure check on `data/seed-entries.example.json` only. **No example data inserted** — `CLAUDE.md rule 3`
+- [~] RLS tests written (`test/rls.test.ts`); self-skip without creds. Run live to close acceptance — Next #2
 
 ### Phase 3 — Auth + submission form — `BUILD_PLAN §Phase 3`
 - [ ] `/submit` React island; GitHub OAuth + magic-link fallback; signed-out = disabled form + prompt
@@ -107,6 +110,12 @@ the site (Studio + export Action secret only).
 - [x] **Phase 1 scaffold** — Astro + React + Tailwind, design tokens, IBM Plex
   fonts, `.figure` utility, base layout, nav stubs; `npm run build` passes. —
   2026-07-18
+- [x] **Supabase MCP configured** (`.mcp.json`, project scope) + `.env.example`. —
+  2026-07-19
+- [x] **Phase 2 database** — migration applied live; supabase client, zod schema,
+  cost helper, hand-authored types; schema-sync + cost + seed-structure tests
+  pass (11), RLS integration test written (skips without creds); strict tsc and
+  `npm run build` clean. — 2026-07-19
 
 ---
 
