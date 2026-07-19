@@ -33,7 +33,10 @@ Status key: `[ ]` todo · `[~]` in progress · `[x]` done · `[!]` blocked on `[
 
 Ordered queue. Top item moves to `Now`.
 
-1. [!] **[AVI] Create Supabase project**, note URL + anon key. — `BUILD_PLAN §Phase 0`
+1. [~] **[AVI] Create Supabase project**, note URL + anon key. — `BUILD_PLAN §Phase 0`
+   Project created (`ggpucjklyigxmnhdtyuj`). Supabase MCP added at project scope
+   (`.mcp.json`); URL is in `.env.example`. **Still needed:** the anon key (paste
+   it to Claude, or set it locally) so Phase 2 can run.
 2. [!] **[AVI] Enable GitHub OAuth + email magic link** in Supabase Auth. — `BUILD_PLAN §Phase 0`
 3. [!] **[AVI] Create GitHub repo + connect Cloudflare Pages.** — `BUILD_PLAN §Phase 0`
 4. [!] **[AVI] Decide final project name + domain** (working name is a placeholder). — `PRD §top`, `BUILD_PLAN §Phase 0`
