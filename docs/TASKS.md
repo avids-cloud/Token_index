@@ -115,13 +115,13 @@ the site (Studio + export Action secret only).
   2026-07-18
 - [x] **Supabase MCP configured** (`.mcp.json`, project scope) + `.env.example`. —
   2026-07-19
-- [~] **Repo governance + working agreement** — audit of autonomous-work
+- [x] **Repo governance + working agreement** — audit of autonomous-work
   readiness; `main` branch created; CI workflow on every push; `typecheck`
   script (astro check + tsc); README run-locally + deploy sections; loud
   warning when RLS tests skip; CLAUDE.md rewritten with definition of done;
   `docs/product/README.md` flow; `/new-spec` `/build-story` `/verify` `/ship`
-  commands; PR template. Marked in progress, not done: awaiting Avi's
-  behaviour confirmation per the new definition of done. — 2026-07-19
+  commands; PR template. Avi confirmed the acceptance criteria 2026-07-19.
+  Commits `94fa61a`, `c083cd2`. — 2026-07-19
 - [x] **Phase 2 database** — migration applied live; supabase client, zod schema,
   cost helper, hand-authored types; schema-sync + cost + seed-structure tests
   pass (11), RLS integration test written (skips without creds); strict tsc and
