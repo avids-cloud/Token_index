@@ -9,6 +9,7 @@
     "preview": "astro preview",
     "test": "vitest run",
     "typecheck": "astro check && tsc --noEmit",
+    "test:e2e": "playwright test",
     "astro": "astro"
   },
   "dependencies": {
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
+    "@playwright/test": "^1.61.1",
     "@types/node": "^26.1.1",
     "typescript": "^6.0.3",
     "vitest": "^4.1.10"

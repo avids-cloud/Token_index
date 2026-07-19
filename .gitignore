@@ -12,6 +12,10 @@ dist/
 # Astro
 .astro/
 
+# Playwright
+test-results/
+playwright-report/
+
 # Environment (never commit secrets; service role key never lives here)
 .env
 .env.*

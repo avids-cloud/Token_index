@@ -7,6 +7,7 @@ npm ci               # install exact locked dependencies
 npm run dev          # local dev server at localhost:4321
 npm run build        # production build, must pass before any commit
 npm run test         # unit + integration tests (vitest)
+npm run test:e2e     # browser tests (playwright; run npm run build first)
 npm run typecheck    # astro check + tsc, must pass before any commit
 supabase db push     # apply migrations (needs Supabase CLI auth)
 ```
@@ -41,7 +42,10 @@ approved dataset to versioned JSON files in `data/exports/`.
 No feature is complete until BOTH of these are true:
 
 1. It has an automated test that fails without the change and passes with it,
-   and `npm run test`, `npm run build` and `npm run typecheck` all pass.
+   and `npm run test`, `npm run test:e2e`, `npm run build` and
+   `npm run typecheck` all pass. Tests are written from the story's
+   acceptance criteria BEFORE the feature code; E2E test names quote the
+   criteria.
 2. Avi has confirmed the acceptance criteria by looking at the behaviour.
 
 Claude's own inspection never counts as done. "Done pending your
@@ -52,13 +56,15 @@ confirmation" is the strongest claim Claude may make.
 - Use plan mode before any implementation work. Present the plan in plain
   English; Avi reviews behaviour, not diffs.
 - Follow BUILD_PLAN phase order. Do not skip ahead. Log v2 ideas as GitHub
-  issues instead of building them.
+  issues labelled `v2` instead of building them.
 - Work happens on a feature branch; `main` only moves via reviewed changes
   with green CI. Never force-push `main`.
 - Every change summary is written for a non-technical reader using the PR
   template. No code snippets in summaries.
-- Track work on `docs/TASKS.md`: one task in Now, move to Done with date and
-  commit SHA only after Avi confirms.
+- Stories are GitHub issues on Avi's Project board (see
+  `docs/product/README.md`). One story per session; never batch features
+  into one change. Every session ends with a commit and an updated issue
+  status. Issues close via `Closes #N` in the PR, only after Avi confirms.
 
 ## Hard rules
 
