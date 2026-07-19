@@ -30,6 +30,57 @@ Submit through the site, not this repo. You will need:
 
 Entries are moderated for quality before publication. Self-reported single runs and estimates are declined.
 
+## Run it locally
+
+You need [Node.js](https://nodejs.org) version 22 or newer installed. Then,
+in a terminal, from this folder:
+
+1. Install the exact dependencies this project was tested with:
+
+   ```
+   npm ci
+   ```
+
+2. Copy the environment template and fill in the one missing value:
+
+   ```
+   cp .env.example .env
+   ```
+
+   Open the new `.env` file in any text editor. Replace
+   `your-anon-key-here` with the anon key from the Supabase dashboard
+   (Project Settings, then API Keys). This key is safe to use in a browser;
+   it is not a secret.
+
+3. Start the site:
+
+   ```
+   npm run dev
+   ```
+
+4. Open http://localhost:4321 in your browser. Stop the site with Ctrl+C.
+
+To check everything is healthy, run `npm run test` (automated tests),
+`npm run typecheck` (type safety) and `npm run build` (production build).
+All three should finish without errors. Note: the security tests skip with
+a loud warning unless database credentials are set; see `test/rls.test.ts`
+for which variables they need.
+
+## Deploying
+
+The site is designed to deploy to Cloudflare Pages: connect this GitHub
+repository in the Cloudflare dashboard, set the build command to
+`npm run build`, the output directory to `dist`, and add the two
+environment variables from `.env.example`. Every push to `main` then
+deploys automatically, and pull requests get their own preview links.
+
+**Current status: not yet connected.** Until that is done, the only way to
+see the site is running it locally as above.
+
+Every push to GitHub also runs the automated checks (tests, type check,
+build). A green tick next to a commit means the checks passed; a red cross
+means something is broken.
+
 ## Repo layout
 
 ```

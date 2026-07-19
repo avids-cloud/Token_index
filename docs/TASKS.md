@@ -41,10 +41,13 @@ Ordered queue. Top item moves to `Now`.
    `test/rls.test.ts` runs live, closing the Phase 2 acceptance criterion. — `BUILD_PLAN §Phase 2 accept`
 3. [ ] **Regenerate `src/lib/database.types.ts`** with `supabase gen types` once the
    CLI/MCP is authenticated locally, replacing the hand-authored mirror. — `BUILD_PLAN §Phase 2`
-4. [!] **[AVI] Create GitHub repo + connect Cloudflare Pages.** — `BUILD_PLAN §Phase 0`
-5. [!] **[AVI] Decide final project name + domain** (working name is a placeholder). — `PRD §top`, `BUILD_PLAN §Phase 0`
-6. [!] **[AVI] Verify every price in `data/model-pricing.json`** against provider pages, refresh `as_of`. — `BUILD_PLAN §Phase 0`, `CLAUDE.md rule 5`
-7. [ ] **Phase 3: `/submit` form**, once OAuth is enabled. — `BUILD_PLAN §Phase 3`
+4. [!] **[AVI] Make `main` the default branch** in GitHub settings (Settings →
+   General → Default branch). The branch exists; only the default flip needs a
+   human. — repo governance session, 2026-07-19
+5. [!] **[AVI] Create GitHub repo + connect Cloudflare Pages.** — `BUILD_PLAN §Phase 0`
+6. [!] **[AVI] Decide final project name + domain** (working name is a placeholder). — `PRD §top`, `BUILD_PLAN §Phase 0`
+7. [!] **[AVI] Verify every price in `data/model-pricing.json`** against provider pages, refresh `as_of` (stale since 2026-01-15). — `BUILD_PLAN §Phase 0`, `CLAUDE.md rule 5`
+8. [ ] **Phase 3: `/submit` form**, once OAuth is enabled. — `BUILD_PLAN §Phase 3`
 
 ---
 
@@ -112,6 +115,13 @@ the site (Studio + export Action secret only).
   2026-07-18
 - [x] **Supabase MCP configured** (`.mcp.json`, project scope) + `.env.example`. —
   2026-07-19
+- [x] **Repo governance + working agreement** — audit of autonomous-work
+  readiness; `main` branch created; CI workflow on every push; `typecheck`
+  script (astro check + tsc); README run-locally + deploy sections; loud
+  warning when RLS tests skip; CLAUDE.md rewritten with definition of done;
+  `docs/product/README.md` flow; `/new-spec` `/build-story` `/verify` `/ship`
+  commands; PR template. Avi confirmed the acceptance criteria 2026-07-19.
+  Commits `94fa61a`, `c083cd2`. — 2026-07-19
 - [x] **Phase 2 database** — migration applied live; supabase client, zod schema,
   cost helper, hand-authored types; schema-sync + cost + seed-structure tests
   pass (11), RLS integration test written (skips without creds); strict tsc and
