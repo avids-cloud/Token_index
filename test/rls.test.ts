@@ -20,6 +20,28 @@ const testPassword = process.env.TEST_USER_PASSWORD;
 const haveAnon = Boolean(url && anonKey);
 const haveUser = Boolean(haveAnon && testEmail && testPassword);
 
+// Write straight to stderr: vitest hides console output from skipped files,
+// and this warning must be impossible to miss in local runs and CI logs.
+if (!haveAnon) {
+  process.stderr.write(
+    '\n' +
+      '='.repeat(72) +
+      '\n' +
+      'WARNING: RLS security tests SKIPPED (no PUBLIC_SUPABASE_URL /\n' +
+      'PUBLIC_SUPABASE_ANON_KEY set). Row-level security is UNVERIFIED in\n' +
+      'this run. These tests prove strangers cannot read pending submissions\n' +
+      'or write to the database. Set the credentials and re-run before\n' +
+      'trusting any security-affecting change.\n' +
+      '='.repeat(72) +
+      '\n\n',
+  );
+} else if (!haveUser) {
+  process.stderr.write(
+    'WARNING: RLS authenticated-submitter tests SKIPPED (no TEST_USER_EMAIL /\n' +
+      'TEST_USER_PASSWORD set). Only the anonymous-access cases ran.\n',
+  );
+}
+
 function anonClient() {
   return createClient<Database>(url!, anonKey!);
 }
