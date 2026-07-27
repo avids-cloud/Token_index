@@ -1,5 +1,9 @@
 ---
 import Base from '../layouts/Base.astro';
+import EntryIndex from '../components/EntryIndex.tsx';
+
+// Astro needs the client:visible directive to hydrate the React island.
+// data changes as moderation happens, so we fetch client-side, not at build.
 ---
 
 <Base title="Token Cost Index">
@@ -14,21 +18,7 @@ import Base from '../layouts/Base.astro';
     </p>
   </section>
 
-  <section class="mt-8 border border-rule">
-    <div class="border-b border-rule px-4 py-3">
-      <h2 class="m-0 text-sm font-semibold tracking-tight">Approved entries</h2>
-    </div>
-    <div class="px-4 py-12 text-center">
-      <p class="m-0 text-sm">
-        No entries yet. The index opens once seed data is approved.
-      </p>
-      <p class="mt-2 text-sm">
-        <a href="/submit">Submit the first one</a>.
-      </p>
-    </div>
-  </section>
-
-  <p class="mt-4 text-xs">
-    The searchable table, filters, and repricing calculator arrive with Phase 4.
-  </p>
+  <div class="mt-8">
+    <EntryIndex client:visible />
+  </div>
 </Base>

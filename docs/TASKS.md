@@ -25,11 +25,8 @@ Status key: `[ ]` todo · `[~]` in progress · `[x]` done · `[!]` blocked on `[
 
 ## Now
 
-- [ ] **Phase 3 (auth + submission form) is next**, but it needs GitHub OAuth +
-  magic link enabled in Supabase Auth (item 1 below) before the form can sign
-  anyone in. Phase 1 (scaffold) and Phase 2 (database) are complete — see `Done`.
-  One Phase 2 loose end: run the RLS integration test with real credentials to
-  turn its ✍️-written cases green (item 2 below).
+- [~] **Phase 4 review.** Code is on PR #26 for Avi to review. Acceptance
+  criteria need live verification with 5 test entries in a dev database.
 
 ## Next
 
@@ -82,12 +79,13 @@ the site (Studio + export Action secret only).
 - [ ] E2E: valid authed submit lands `pending`; invalid blocked client + server
 
 ### Phase 4 — Index viewer + calculator — `BUILD_PLAN §Phase 4`, `DESIGN §Signature element`
-- [ ] `/` table of `public_entries`, fetched client-side
-- [ ] Repricing strip: model selector from `data/model-pricing.json`, monthly volume input, reprices rows
-- [ ] Cost formula `= (in_median*in_price + out_median*out_price)/1e6`; **do not** re-multiply `calls_per_unit` — `CLAUDE.md §Cost calculation`
-- [ ] Cost-calc unit test (keep passing)
-- [ ] Filters (pattern, industry, provider) URL-persisted; sort numeric cols; every $ shows `as_of`
-- [ ] Empty state copy; reduced-motion; usable at 360px
+- [x] `/` table of `public_entries`, fetched client-side — PR #26
+- [x] Repricing strip: model selector from `data/model-pricing.json`, monthly volume input, reprices rows — PR #26
+- [x] Cost formula `= (in_median*in_price + out_median*out_price)/1e6`; **does not** re-multiply `calls_per_unit` — PR #26
+- [x] Cost-calc unit test (keep passing) — PR #26
+- [x] Filters (pattern, industry, provider) URL-persisted; sort numeric cols; every $ shows `as_of` — PR #26
+- [x] Empty state copy; reduced-motion; usable at 360px — PR #26
+- [ ] **Live acceptance: verify with 5 test entries in a dev database**
 
 ### Phase 5 — Entry detail + API docs — `BUILD_PLAN §Phase 5`
 - [ ] `/entry/[id]`: full figures incl p90 range "typical vs heavy tail", methodology, source, scoped repricer
