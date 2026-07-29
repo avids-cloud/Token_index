@@ -117,7 +117,14 @@ export default function EntryTable({
         <tbody>
           {entries.map((entry) => (
             <tr key={entry.id} className="border-b border-rule hover:bg-rule/30">
-              <td className="px-3 py-2">{entry.task_name}</td>
+              <td className="px-3 py-2">
+                <a
+                  href={`/entry?id=${encodeURIComponent(entry.id)}`}
+                  className="text-accent underline"
+                >
+                  {entry.task_name}
+                </a>
+              </td>
               <td className="px-3 py-2">
                 {entry.task_pattern.replace(/_/g, ' ')}
               </td>

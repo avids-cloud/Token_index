@@ -25,8 +25,11 @@ Status key: `[ ]` todo · `[~]` in progress · `[x]` done · `[!]` blocked on `[
 
 ## Now
 
-- [~] **Phase 4 review.** Code is on PR #26 for Avi to review. Acceptance
-  criteria need live verification with 5 test entries in a dev database.
+- [~] **Phase 5 review.** Code is on the `phase-5-detail-api-about` branch
+  for Avi to review. Entry detail page, API docs, and About page all built
+  and passing. Acceptance criteria need live verification: detail pages
+  render from live data, and API curl examples work when pasted into a
+  terminal.
 
 ## Next
 
@@ -88,9 +91,10 @@ the site (Studio + export Action secret only).
 - [ ] **Live acceptance: verify with 5 test entries in a dev database**
 
 ### Phase 5 — Entry detail + API docs — `BUILD_PLAN §Phase 5`
-- [ ] `/entry/[id]`: full figures incl p90 range "typical vs heavy tail", methodology, source, scoped repricer
-- [ ] `/api`: PostgREST endpoint docs with working curl + fetch examples over `public_entries`
-- [ ] `/about`: what it is, quality rules, licensing, moderation
+- [x] `/entry/[id]`: full figures incl p90 range "typical vs heavy tail", methodology, source, scoped repricer — branch `phase-5-detail-api-about`
+- [x] `/api`: PostgREST endpoint docs with working curl + fetch examples over `public_entries` — branch `phase-5-detail-api-about`
+- [x] `/about`: what it is, quality rules, licensing, moderation — branch `phase-5-detail-api-about`
+- [ ] **Live acceptance: detail pages render from live data; API examples work when pasted**
 
 ### Phase 6 — Dataset export — `BUILD_PLAN §Phase 6`
 - [ ] Nightly GitHub Action: pull `public_entries` (anon), validate each row vs schema, write `data/exports/entries-latest.json` + dated snapshot, commit if changed
