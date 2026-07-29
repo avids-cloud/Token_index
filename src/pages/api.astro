@@ -1,18 +1,138 @@
 ---
 import Base from '../layouts/Base.astro';
+
+// The endpoint URL is built from the known Supabase project URL.
+// The anon key is public by design (RLS does the security work).
+const supabaseProject = 'ggpucjklyigxmnhdtyuj';
+const baseUrl = `https://${supabaseProject}.supabase.co/rest/v1/public_entries`;
+const anonKey = 'YOUR_ANON_KEY'; // replaced client-side from env, shown as placeholder in docs
+
+const fields = [
+  { name: 'id', type: 'uuid', desc: 'Unique identifier for the entry' },
+  { name: 'task_name', type: 'text', desc: 'Plain-language name for the task' },
+  { name: 'task_pattern', type: 'enum', desc: 'extraction, classification, summarisation, generation, reconciliation, translation, analysis, agentic_workflow, conversation, other' },
+  { name: 'industry_tags', type: 'text[]', desc: 'One or more industry tags' },
+  { name: 'task_unit', type: 'text', desc: 'The unit costs are measured against (e.g. per invoice)' },
+  { name: 'provider', type: 'text', desc: 'Lowercase provider slug (e.g. anthropic, openai)' },
+  { name: 'model', type: 'text', desc: 'Model identifier as billed' },
+  { name: 'prompt_strategy', type: 'enum', desc: 'zero_shot, few_shot, rag, agentic, fine_tuned, other' },
+  { name: 'calls_per_unit', type: 'numeric', desc: 'Average API calls per task unit' },
+  { name: 'includes_retries', type: 'boolean', desc: 'Whether token figures include failed calls and retries' },
+  { name: 'input_tokens_median', type: 'integer', desc: 'Median input tokens per task unit, summed across all calls' },
+  { name: 'output_tokens_median', type: 'integer', desc: 'Median output tokens per task unit' },
+  { name: 'input_tokens_p90', type: 'integer', desc: '90th percentile input tokens, if provided' },
+  { name: 'output_tokens_p90', type: 'integer', desc: '90th percentile output tokens, if provided' },
+  { name: 'sample_size', type: 'integer', desc: 'Number of task units measured (minimum 10)' },
+  { name: 'measurement_date', type: 'date', desc: 'When the measurement was taken (YYYY-MM-DD)' },
+  { name: 'methodology', type: 'text', desc: 'How tokens were measured (the trust mechanism)' },
+  { name: 'source_url', type: 'text', desc: 'Optional link to a write-up or benchmark' },
+  { name: 'submitter_display', type: 'text', desc: 'Optional public handle for attribution' },
+  { name: 'created_at', type: 'timestamptz', desc: 'When the entry was submitted' },
+];
 ---
 
 <Base title="API · Token Cost Index">
-  <section class="max-w-2xl">
+  <section class="max-w-3xl">
     <h1 class="text-figure m-0 text-3xl font-semibold tracking-tight">
       API
     </h1>
     <p class="mt-3 text-base leading-relaxed">
-      The full approved dataset is readable over a public endpoint and as
-      versioned JSON exports. No key needed for reads.
+      The full approved dataset is readable over a public endpoint. No key
+      needed for reads. The anon key is public by design and row-level security
+      rules ensure only approved entries are visible.
     </p>
-    <p class="mt-4 text-sm">
-      Endpoint documentation with copy-paste examples arrives with Phase 5.
+  </section>
+
+  <section class="mt-8">
+    <h2 class="text-sm font-semibold tracking-tight">Endpoint</h2>
+    <pre class="figure mt-2 overflow-x-auto border border-rule bg-paper px-4 py-3 text-sm"><code>{baseUrl}</code></pre>
+    <p class="mt-2 text-xs text-ink">
+      Append query parameters to filter, select, and order results. See the
+      <a href="https://postgrest.org/en/stable/api.html" class="text-accent underline" rel="noopener noreferrer">PostgREST documentation</a>
+      for the full query language.
+    </p>
+  </section>
+
+  <section class="mt-8">
+    <h2 class="text-sm font-semibold tracking-tight">Available fields</h2>
+    <div class="mt-2 overflow-x-auto">
+      <table class="w-full border-collapse text-sm">
+        <thead>
+          <tr class="border-b border-rule">
+            <th scope="col" class="px-3 py-2 text-left font-semibold">Field</th>
+            <th scope="col" class="px-3 py-2 text-left font-semibold">Type</th>
+            <th scope="col" class="px-3 py-2 text-left font-semibold">Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          {fields.map((f) => (
+            <tr class="border-b border-rule">
+              <td class="figure px-3 py-2">{f.name}</td>
+              <td class="px-3 py-2 text-ink">{f.type}</td>
+              <td class="px-3 py-2">{f.desc}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="mt-8">
+    <h2 class="text-sm font-semibold tracking-tight">Examples</h2>
+
+    <div class="mt-4">
+      <h3 class="text-xs font-semibold tracking-tight">Fetch all entries (curl)</h3>
+      <pre class="figure mt-2 overflow-x-auto border border-rule bg-paper px-4 py-3 text-xs"><code>curl "{baseUrl}" \
+  -H "apikey: {anonKey}" \
+  -H "Accept: application/json"</code></pre>
+    </div>
+
+    <div class="mt-4">
+      <h3 class="text-xs font-semibold tracking-tight">Filter by task pattern (curl)</h3>
+      <pre class="figure mt-2 overflow-x-auto border border-rule bg-paper px-4 py-3 text-xs"><code>curl "{baseUrl}?task_pattern=eq.extraction" \
+  -H "apikey: {anonKey}" \
+  -H "Accept: application/json"</code></pre>
+    </div>
+
+    <div class="mt-4">
+      <h3 class="text-xs font-semibold tracking-tight">Select specific fields (curl)</h3>
+      <pre class="figure mt-2 overflow-x-auto border border-rule bg-paper px-4 py-3 text-xs"><code>curl "{baseUrl}?select=task_name,model,input_tokens_median,output_tokens_median" \
+  -H "apikey: {anonKey}" \
+  -H "Accept: application/json"</code></pre>
+    </div>
+
+    <div class="mt-4">
+      <h3 class="text-xs font-semibold tracking-tight">Fetch from JavaScript (fetch)</h3>
+      <pre class="figure mt-2 overflow-x-auto border border-rule bg-paper px-4 py-3 text-xs"><code set:html={`const response = await fetch(
+  "${baseUrl}?task_pattern=eq.extraction",
+  {
+    headers: {
+      "apikey": "${anonKey}",
+      "Accept": "application/json",
+    },
+  },
+);
+const entries = await response.json();
+console.log(entries);`}></code></pre>
+    </div>
+  </section>
+
+  <section class="mt-8">
+    <h2 class="text-sm font-semibold tracking-tight">Versioned exports</h2>
+    <p class="mt-2 text-sm leading-relaxed">
+      The full approved dataset is also committed as versioned JSON snapshots in
+      <code class="figure text-xs">data/exports/</code> in the GitHub repository,
+      refreshed nightly. These are useful for offline analysis, academic work,
+      or building tools without a live API call.
+    </p>
+  </section>
+
+  <section class="mt-8">
+    <h2 class="text-sm font-semibold tracking-tight">Rate limits and fair use</h2>
+    <p class="mt-2 text-sm leading-relaxed">
+      The API is hosted on Supabase and subject to their rate limits. For bulk
+      access, prefer the versioned JSON exports over repeated API calls. For
+      automated dashboards, cache results rather than polling at high frequency.
     </p>
   </section>
 </Base>
