@@ -1,0 +1,9 @@
+{
+  // Token Cost Index is a static Astro site hosted on Cloudflare Pages.
+  // This file pins the Pages project name and the directory of pre-built
+  // static assets so `wrangler pages deploy` does not need flags, and so
+  // wrangler never falls back to auto-configuring a Worker (which injected
+  // an SSR adapter and broke the deploy with a compatibility-date error).
+  "name": "tokenindex",
+  "pages_build_output_dir": "dist"
+}
