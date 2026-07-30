@@ -81,11 +81,17 @@ export default function EntryIndex() {
     return [...set].sort();
   }, [loadState]);
 
-  // Apply filters and sort
+  // Apply filters and sort. Sorting by cost uses the selected model's rates
+  // so the displayed order matches the displayed prices.
   const visibleEntries = useMemo(() => {
     if (loadState.status !== 'success') return [];
-    return applyFiltersAndSort(loadState.entries, state.filters, state.sort);
-  }, [loadState, state.filters, state.sort]);
+    return applyFiltersAndSort(
+      loadState.entries,
+      state.filters,
+      state.sort,
+      selectedModel,
+    );
+  }, [loadState, state.filters, state.sort, selectedModel]);
 
   // Price the visible entries at the selected model
   const pricedEntries: PricedEntry[] = useMemo(

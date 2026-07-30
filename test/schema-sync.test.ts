@@ -50,8 +50,10 @@ describe('zod schema stays in sync with the JSON Schema', () => {
   });
 
   it('marks the same fields required', () => {
+    // A field is optional when its schema accepts undefined. This avoids the
+    // deprecated zod `.isOptional()` method.
     const zodRequired = Object.entries(entryObject.shape)
-      .filter(([, def]) => !def.isOptional())
+      .filter(([, def]) => def.safeParse(undefined).success === false)
       .map(([name]) => name)
       .sort();
     const jsonRequired = [...jsonSchema.required]

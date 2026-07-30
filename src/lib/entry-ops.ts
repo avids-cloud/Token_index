@@ -4,13 +4,21 @@
 // One responsibility: filter and sort entry arrays.
 
 import type { PublicEntryRow } from './database.types';
+import type { ModelPricing } from './pricing';
+import { getDefaultModel } from './pricing';
+import { costPerUnitUsd } from './cost';
 import type { SortKey, SortDir } from './useUrlState';
 
+// An entry that may already carry a computed costPerUnit (added by
+// priceEntries in EntryTable). Sorting by cost uses it when present.
+export type SortableEntry = PublicEntryRow & { costPerUnit?: number };
+
 export function applyFiltersAndSort(
-  entries: PublicEntryRow[],
+  entries: SortableEntry[],
   filters: { pattern: string; industries: string[]; provider: string },
   sort: { key: SortKey; dir: SortDir },
-): PublicEntryRow[] {
+  price: ModelPricing = getDefaultModel(),
+): SortableEntry[] {
   let result = entries;
 
   if (filters.pattern) {
@@ -24,6 +32,18 @@ export function applyFiltersAndSort(
       filters.industries.some((ind) => e.industry_tags.includes(ind)),
     );
   }
+
+  // Cost per unit is computed from stored tokens at the selected model's
+  // rates. Use the pre-computed value when the row has one; otherwise derive
+  // it here so cost ordering is always by real dollars, never a token proxy.
+  // Sorting by a token sum is wrong whenever input and output prices differ
+  // (they always do: output tokens cost more).
+  const costOf = (e: SortableEntry): number =>
+    e.costPerUnit ??
+    costPerUnitUsd(e.input_tokens_median, e.output_tokens_median, {
+      input: price.input,
+      output: price.output,
+    });
 
   const dir = sort.dir === 'asc' ? 1 : -1;
   const sorted = [...result].sort((a, b) => {
@@ -51,11 +71,7 @@ export function applyFiltersAndSort(
         cmp = a.output_tokens_median - b.output_tokens_median;
         break;
       case 'cost_per_unit':
-        // cost_per_unit is computed at display time; compare via stored tokens
-        // using default model pricing as a stable proxy.
-        cmp =
-          a.input_tokens_median + a.output_tokens_median -
-          (b.input_tokens_median + b.output_tokens_median);
+        cmp = costOf(a) - costOf(b);
         break;
       case 'sample_size':
         cmp = a.sample_size - b.sample_size;

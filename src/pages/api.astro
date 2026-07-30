@@ -1,11 +1,15 @@
 ---
 import Base from '../layouts/Base.astro';
 
-// The endpoint URL is built from the known Supabase project URL.
+// Build the REST endpoint from the same env var the site client uses, so the
+// docs cannot drift from the live config. Falls back to a placeholder in the
+// static build when env is not set; the docs still describe the shape.
 // The anon key is public by design (RLS does the security work).
-const supabaseProject = 'ggpucjklyigxmnhdtyuj';
-const baseUrl = `https://${supabaseProject}.supabase.co/rest/v1/public_entries`;
-const anonKey = 'YOUR_ANON_KEY'; // replaced client-side from env, shown as placeholder in docs
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL as string | undefined;
+const baseUrl = supabaseUrl
+  ? `${supabaseUrl.replace(/\/$/, '')}/rest/v1/public_entries`
+  : 'https://YOUR_PROJECT_REF.supabase.co/rest/v1/public_entries';
+const anonKey = 'YOUR_ANON_KEY'; // placeholder in docs; the real key ships to the browser
 
 const fields = [
   { name: 'id', type: 'uuid', desc: 'Unique identifier for the entry' },

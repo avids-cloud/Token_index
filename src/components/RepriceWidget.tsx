@@ -3,7 +3,13 @@
 // Reuses the pricing module and count-up hook from Phase 4.
 
 import { useState, useMemo } from 'react';
-import { getAllModels, getModel, getDefaultModel, getAsOfLabel } from '../lib/pricing';
+import {
+  getAllModels,
+  getModel,
+  getDefaultModel,
+  getAsOfLabel,
+  getAsOfAge,
+} from '../lib/pricing';
 import type { ModelPricing } from '../lib/pricing';
 import { costPerUnitUsd } from '../lib/cost';
 import { useCountUp } from '../lib/countUp';
@@ -124,6 +130,12 @@ export default function RepriceWidget({
           <dt className="text-ink">Pricing as of</dt>
           <dd className="m-0 text-right">{getAsOfLabel(model.as_of)}</dd>
         </dl>
+        {getAsOfAge(model.as_of).stale && (
+          <p className="m-0 mt-2 text-xs text-delta" role="note">
+            These prices are {getAsOfAge(model.as_of).label} old. Verify them
+            against the provider pricing pages before relying on them.
+          </p>
+        )}
       </div>
     </div>
   );
