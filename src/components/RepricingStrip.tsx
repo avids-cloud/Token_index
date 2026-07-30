@@ -2,7 +2,12 @@
 // monthly volume input. Changing either reprices every visible row.
 // See docs/DESIGN.md "Signature element".
 
-import { getAllModels, getAsOfLabel, type ModelPricing } from '../lib/pricing';
+import {
+  getAllModels,
+  getAsOfLabel,
+  getAsOfAge,
+  type ModelPricing,
+} from '../lib/pricing';
 
 interface Props {
   selectedModel: string;
@@ -26,6 +31,7 @@ export default function RepricingStrip({
   const asOf =
     models.find((m) => m.model === selectedModel)?.as_of ?? models[0].as_of;
   const asOfLabel = getAsOfLabel(asOf);
+  const age = getAsOfAge(asOf);
 
   return (
     <div
@@ -85,6 +91,12 @@ export default function RepricingStrip({
           Prices as of {asOfLabel}
         </p>
       </div>
+      {age.stale && (
+        <p className="m-0 mt-2 text-xs text-delta" role="note">
+          These prices are {age.label} old. Verify them against the provider
+          pricing pages before relying on them.
+        </p>
+      )}
     </div>
   );
 }

@@ -42,7 +42,41 @@ const DEFAULT_STATE: IndexViewState = {
   volume: 0,
 };
 
-function parseState(search: string): IndexViewState {
+// Whitelists for untrusted URL params. Anything outside these falls back to
+// the default rather than flowing into state.
+const SORT_KEYS: readonly SortKey[] = [
+  'task_name',
+  'task_pattern',
+  'industry_tags',
+  'model',
+  'input_tokens_median',
+  'output_tokens_median',
+  'cost_per_unit',
+  'sample_size',
+  'measurement_date',
+];
+const SORT_DIRS: readonly SortDir[] = ['asc', 'desc'];
+
+function parseSortKey(raw: string | null): SortKey {
+  return SORT_KEYS.includes(raw as SortKey)
+    ? (raw as SortKey)
+    : DEFAULT_STATE.sort.key;
+}
+
+function parseSortDir(raw: string | null): SortDir {
+  return SORT_DIRS.includes(raw as SortDir)
+    ? (raw as SortDir)
+    : DEFAULT_STATE.sort.dir;
+}
+
+function parseVolume(raw: string | null): number {
+  if (!raw) return 0;
+  const n = Number.parseInt(raw, 10);
+  return Number.isInteger(n) && n > 0 ? n : 0;
+}
+
+// Exported so tests exercise this exact logic (not a re-implemented copy).
+export function parseState(search: string): IndexViewState {
   const params = new URLSearchParams(search);
   return {
     filters: {
@@ -51,15 +85,16 @@ function parseState(search: string): IndexViewState {
       provider: params.get('provider') ?? '',
     },
     sort: {
-      key: (params.get('sort') as SortKey) ?? DEFAULT_STATE.sort.key,
-      dir: (params.get('dir') as SortDir) ?? DEFAULT_STATE.sort.dir,
+      key: parseSortKey(params.get('sort')),
+      dir: parseSortDir(params.get('dir')),
     },
     selectedModel: params.get('model') ?? '',
-    volume: params.get('volume') ? parseInt(params.get('volume')!, 10) : 0,
+    volume: parseVolume(params.get('volume')),
   };
 }
 
-function serializeState(state: IndexViewState): string {
+// Exported so tests exercise this exact logic.
+export function serializeState(state: IndexViewState): string {
   const params = new URLSearchParams();
   if (state.filters.pattern) params.set('pattern', state.filters.pattern);
   for (const ind of state.filters.industries) {
