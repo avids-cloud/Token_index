@@ -20,6 +20,34 @@ A community index where each entry records how many tokens a defined business ta
 - **API:** public read endpoint over approved entries (see `/api` on the site)
 - **Export:** versioned JSON snapshots in `data/exports/`, refreshed nightly, validated against `schema/entry.schema.json`
 
+### Export format
+
+The dataset is exported as JSON files in `data/exports/`:
+
+- `entries-latest.json` — the current snapshot of all approved entries, overwritten each run
+- `entries-YYYY-MM-DD.json` — a dated copy, kept for history
+
+Each file contains a JSON array of entry objects. Every object conforms to
+`schema/entry.schema.json`, which mirrors the database schema. Fields
+store token counts and metadata, never dollar amounts. Dollar costs are
+computed at display time from `data/model-pricing.json`.
+
+A GitHub Action runs nightly and on manual dispatch. It fetches all
+approved entries from the public read API, validates each row against the
+schema, and commits the export only if something changed. If any row
+fails validation the Action fails loudly and no bad data is committed.
+
+To consume the export in your own project:
+
+```js
+import { readFileSync } from 'node:fs';
+const entries = JSON.parse(readFileSync('entries-latest.json', 'utf8'));
+// entries is an array; each item has input_tokens_median, output_tokens_median,
+// model, provider, and the rest of the fields in schema/entry.schema.json
+```
+
+The data is licensed CC BY 4.0. See `data/LICENSE`.
+
 ## Contributing an entry
 
 Submit through the site, not this repo. You will need:

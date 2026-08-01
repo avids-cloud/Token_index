@@ -25,11 +25,13 @@ Status key: `[ ]` todo · `[~]` in progress · `[x]` done · `[!]` blocked on `[
 
 ## Now
 
-- [~] **Phase 5 review.** Code is on the `phase-5-detail-api-about` branch
-  for Avi to review. Entry detail page, API docs, and About page all built
-  and passing. Acceptance criteria need live verification: detail pages
-  render from live data, and API curl examples work when pasted into a
-  terminal.
+- [~] **Phase 6: dataset export.** Code is on the `phase-6-dataset-export`
+  branch for Avi to review. Export script, validator, GitHub Action, tests,
+  and README section all built and passing. Acceptance needs live
+  verification: the Action runs green on manual dispatch and produces a
+  valid, schema-conformant export. With no approved entries yet it
+  produces an empty array (still valid). Live acceptance with real data
+  waits on Avi seeding entries.
 
 ## Next
 
@@ -97,9 +99,10 @@ the site (Studio + export Action secret only).
 - [ ] **Live acceptance: detail pages render from live data; API examples work when pasted**
 
 ### Phase 6 — Dataset export — `BUILD_PLAN §Phase 6`
-- [ ] Nightly GitHub Action: pull `public_entries` (anon), validate each row vs schema, write `data/exports/entries-latest.json` + dated snapshot, commit if changed
-- [ ] Validation failure fails the Action loudly (no bad-data commit)
-- [ ] README export-format section
+- [x] Nightly GitHub Action: pull `public_entries` (anon), validate each row vs schema, write `data/exports/entries-latest.json` + dated snapshot, commit if changed — branch `phase-6-dataset-export`
+- [x] Validation failure fails the Action loudly (no bad-data commit) — branch `phase-6-dataset-export`
+- [x] README export-format section — branch `phase-6-dataset-export`
+- [ ] **Live acceptance: Action runs green on manual dispatch and produces a valid export**
 
 ### Phase 7 — Launch checklist `[AVI]` — `BUILD_PLAN §Phase 7`
 - [ ] 25+ real seed entries approved; pricing verified <30 days; Lighthouse a11y 95+/perf 90+; licence files; launch posts; 3 pre-launch contributors
