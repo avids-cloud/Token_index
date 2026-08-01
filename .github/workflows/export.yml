@@ -1,0 +1,51 @@
+# Nightly dataset export. Pulls all approved entries from the
+# public_entries view via the anon key (RLS allows reading approved rows,
+# so no service role key is needed), validates every row against
+# schema/entry.schema.json, and commits the result to data/exports/.
+#
+# Runs nightly and on manual dispatch. Fails loudly if any row fails
+# validation, so bad data is never committed. Skips the commit if the
+# export is byte-identical to the previous run.
+name: Dataset export
+
+on:
+  schedule:
+    # 02:00 UTC nightly
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install exact locked dependencies
+        run: npm ci
+
+      - name: Run dataset export
+        run: node scripts/export-dataset.mjs
+        env:
+          PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+          PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
+
+      - name: Commit export if changed
+        run: |
+          if [ -n "$(git status --porcelain data/exports/)" ]; then
+            git config user.name 'github-actions[bot]'
+            git config user.email 'github-actions[bot]@users.noreply.github.com'
+            git add data/exports/
+            git commit -m 'Nightly dataset export: $(date -u +%Y-%m-%d)'
+            git push
+            echo "Export committed and pushed."
+          else
+            echo "No changes since the last export. Skipping commit."
+          fi
